@@ -41,7 +41,8 @@ jobs:
   deploy:
     name: Deploy to ECS
     needs: build-test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # AWS 인프라 셋업 후 Repository variable DEPLOY_ENABLED=true 설정 시 활성화.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     permissions:
       id-token: write

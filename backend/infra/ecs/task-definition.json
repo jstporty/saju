@@ -1,0 +1,52 @@
+{
+  "family": "saju-backend",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "REPLACE_WITH_TASK_EXECUTION_ROLE_ARN",
+  "taskRoleArn": "REPLACE_WITH_TASK_ROLE_ARN",
+  "runtimePlatform": {
+    "operatingSystemFamily": "LINUX",
+    "cpuArchitecture": "X86_64"
+  },
+  "containerDefinitions": [
+    {
+      "name": "saju-backend",
+      "image": "REPLACE_BY_CI_PIPELINE",
+      "essential": true,
+      "portMappings": [{ "containerPort": 8080, "protocol": "tcp" }],
+      "environment": [
+        { "name": "SPRING_PROFILES_ACTIVE", "value": "prod" },
+        { "name": "AWS_REGION", "value": "ap-northeast-2" }
+      ],
+      "secrets": [
+        { "name": "DB_URL",            "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:ACCOUNT:secret:saju/prod/db-XXXXXX:url::" },
+        { "name": "DB_USERNAME",       "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:ACCOUNT:secret:saju/prod/db-XXXXXX:username::" },
+        { "name": "DB_PASSWORD",       "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:ACCOUNT:secret:saju/prod/db-XXXXXX:password::" },
+        { "name": "KAKAO_CLIENT_ID",   "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:ACCOUNT:secret:saju/prod/kakao-XXXXXX:client_id::" },
+        { "name": "KAKAO_CLIENT_SECRET","valueFrom": "arn:aws:secretsmanager:ap-northeast-2:ACCOUNT:secret:saju/prod/kakao-XXXXXX:client_secret::" },
+        { "name": "KAKAO_REDIRECT_URI","valueFrom": "arn:aws:secretsmanager:ap-northeast-2:ACCOUNT:secret:saju/prod/kakao-XXXXXX:redirect_uri::" },
+        { "name": "HF_TOKEN",          "valueFrom": "arn:aws:secretsmanager:ap-northeast-2:ACCOUNT:secret:saju/prod/hf-XXXXXX:token::" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/saju-backend",
+          "awslogs-region": "ap-northeast-2",
+          "awslogs-stream-prefix": "saju"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8080/actuator/health/liveness || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 40
+      }
+    }
+  ]
+}

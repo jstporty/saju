@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: false
+
+cloud:
+  aws:
+    endpoint:                          # 비워두면 실 AWS 사용
+    region:
+      static: ${AWS_REGION:ap-northeast-2}
+
+cors:
+  allowed-origins: https://saju.app
+
+app:
+  frontend-url: https://saju.app
+
+logging:
+  level:
+    com.company.saju: INFO
+    org.flywaydb: INFO
+    org.hibernate.SQL: WARN

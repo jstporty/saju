@@ -23,8 +23,11 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-out/
-bin/
+# IntelliJ build output (root-level only — hexagonal 'adapter/out', 'port/out' 보존)
+/out/
+/backend/out/
+/bin/
+/backend/bin/
 target/
 generated/
 *.jar
